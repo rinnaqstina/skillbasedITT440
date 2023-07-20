@@ -1,0 +1,26 @@
+import socket
+
+def main():
+    # Server settings
+    host = '192.168.26.128'
+    port = 8888
+
+    # Create a TCP socket
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    try:
+        # Connect to the server
+        client_socket.connect((host, port))
+
+        # Receive data from the server
+        data = client_socket.recv(1024).decode()
+
+        print(f"Received quote of the day: {data}")
+    except ConnectionRefusedError:
+        print(f"Failed to connect to {host}:{port}. Make sure the server is running.")
+    finally:
+        # Close the socket
+        client_socket.close()
+
+if __name__ == "__main__":
+    main()
