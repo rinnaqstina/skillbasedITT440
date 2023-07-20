@@ -1,0 +1,38 @@
+def handle_client(client_socket):
+    # Generate a random quote index
+    quote_index = random.randint(0, len(quotes) - 1)
+    quote = quotes[quote_index]
+
+    # Send the quote to the client
+    client_socket.send(quote.encode())
+
+    # Close the client socket
+    client_socket.close()
+
+# Main function to set up the server
+def main():
+    # Server settings
+    host = '192.168.26.128'
+    port = 8888
+
+    # Create a TCP socket
+    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+
+    # Bind the socket to the address
+    server_socket.bind((host, port))
+
+    # Start listening for incoming connections
+    server_socket.listen(5)
+    print(f"[*] Listening on {host}:{port}")
+
+    while True:
+        # Accept incoming connection
+        client_socket, client_addr = server_socket.accept()
+        print(f"[*] Accepted connection from {client_addr[0]}:{client_addr[1]}")
+
+        # Create a new thread to handle the client
+        client_handler = threading.Thread(target=handle_client, args=(client_socket,))
+        client_handler.start()
+
+if __name__ == "__main__":
+    main()
