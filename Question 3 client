@@ -1,0 +1,35 @@
+import socket
+
+def get_user_input():
+    while True:
+        try:
+            pressure = float(input("Enter pressure in bar: "))
+            return pressure
+        except ValueError:
+            print("Invalid input. Please enter a valid number.")
+
+def connect_to_server():
+    host = '127.0.0.1'
+    port = 12345
+
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((host, port))
+
+    return client_socket
+
+def main():
+    client_socket = connect_to_server()
+
+    try:
+        pressure = get_user_input()
+        client_socket.sendall(str(pressure).encode())
+
+        data = client_socket.recv(1024)
+        atmosphere_standard = float(data.decode())
+
+        print("Pressure in atmosphere-standard: {:.4f} atm".format(atmosphere_standard))
+    finally:
+        client_socket.close()
+
+if __name__ == "__main__":
+    main()
